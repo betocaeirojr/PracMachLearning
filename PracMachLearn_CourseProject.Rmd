@@ -96,7 +96,7 @@ fitControl <- trainControl(method="repeatedcv", number=5, repeats=1, verboseIter
 ```
 
 ## Predicting models with PCA pre-processing
-```{r, cache=TRUE, warning=FALSE, message=FALSE, echo=FALSE }
+```{r, cache=TRUE, warning=FALSE}
 prePro <- preProcess(newTraining[,-53], method="pca", tresh=0.99)
 newTrainingPCA <- predict(prePro,newTraining[,-53]) ; newTestingPCA <- predict(prePro,newTesting[,-53])
 
@@ -122,7 +122,7 @@ cm_gbm_pca <- confusionMatrix(newTesting$classe, predict(modelFitGBMPCA, newdata
 ```
 
 ## Predicting Models without PCA
-```{r, cache=TRUE, warning=FALSE, message=FALSE, echo=FALSE }
+```{r, cache=TRUE, warning=FALSE }
 # Decision Trees
 modelFitTree <- train(classe ~ . , method="rpart", data=newTraining, trControl=fitControl)
 cm_tree <- confusionMatrix(newTesting$classe, predict(modelFitTree, newdata=newTesting))
