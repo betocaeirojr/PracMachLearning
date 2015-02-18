@@ -180,13 +180,13 @@ Now we'll use the original testing dataset and the best model for predicting the
 ```{r}
 # This uses the code supplied by the class instructions
 answers <- predict(modelFitRF, newdata=testing)
-write_files = function(x){
+pml_write_files = function(x){
     n = length(x)
     for(i in 1:n){
       filename = paste0("problem_id_",i,".txt")
       write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
     }
 }
-write_files(answers)
+pml_write_files(answers)
 ```
 

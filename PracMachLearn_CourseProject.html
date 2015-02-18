@@ -10,7 +10,7 @@
 
 <meta name="author" content="Alberto A. Caeiro Jr" />
 
-<meta name="date" content="2015-02-16" />
+<meta name="date" content="2015-02-18" />
 
 <title>Practical Machine Learning - Course Final Project</title>
 
@@ -55,7 +55,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Practical Machine Learning - Course Final Project</h1>
 <h4 class="author"><em>Alberto A. Caeiro Jr</em></h4>
-<h4 class="date"><em>February 16, 2015</em></h4>
+<h4 class="date"><em>February 18, 2015</em></h4>
 </div>
 
 
@@ -240,7 +240,7 @@ dim(newTraining); dim(newTesting)</code></pre>
 <div id="model-selection" class="section level2">
 <h2>Model Selection</h2>
 <p>We’ll run some simulations with different machine learning algoritms. We’ll use Random Forest, Decision Trees, Naive Bayes, Linear Discrimant Analysis and Generalized Boosted Regression Model. Besides this we’ll check if using Principal Component Analysis also generates a good basis for prediction.</p>
-<p>. Note: from the referenced paper we know the AdaBoost algo yields 99,9% accuracy. For this work we’ll consider “good” anything higher than 98%.</p>
+<p>Note: from the referenced paper we know the AdaBoost algo yields something better than 99.5% accuracy. For this work we’ll consider “good” anything higher than 98%.</p>
 </div>
 <div id="training-control-parameters" class="section level2">
 <h2>Training Control Parameters</h2>
@@ -249,27 +249,6 @@ fitControl &lt;- trainControl(method=&quot;repeatedcv&quot;, number=5, repeats=1
 </div>
 <div id="predicting-models-with-pca-pre-processing" class="section level2">
 <h2>Predicting models with PCA pre-processing</h2>
-<pre class="r"><code>prePro &lt;- preProcess(newTraining[,-53], method=&quot;pca&quot;, tresh=0.99)
-newTrainingPCA &lt;- predict(prePro,newTraining[,-53]) ; newTestingPCA &lt;- predict(prePro,newTesting[,-53])
-
-# Decision Trees
-modelFitTreePCA &lt;- train(newTraining$classe ~ . , method=&quot;rpart&quot;, trControl=fitControl, data=newTrainingPCA)
-cm_tree_pca &lt;- confusionMatrix(newTesting$classe, predict(modelFitTreePCA, newdata=newTestingPCA))
-
-# Linear Discriminant Analysis
-modelFitLDAPCA &lt;- train(newTraining$classe ~ . , method=&quot;lda&quot;, trControl=fitControl, data=newTrainingPCA)
-cm_lda_pca &lt;- confusionMatrix(newTesting$classe, predict(modelFitLDAPCA, newdata=newTestingPCA))
-
-# Naive Bayes
-modelFitNBPCA &lt;- train(newTraining$classe ~ . , method=&quot;nb&quot;, trControl=fitControl, data=newTrainingPCA)
-cm_nb_pca &lt;- confusionMatrix(newTesting$classe, predict(modelFitNBPCA, newdata=newTestingPCA))
-
-# Random Forest
-modelFitRFPCA &lt;- train(newTraining$classe ~ . , method=&quot;rf&quot;, data=newTrainingPCA)
-cm_rf_pca &lt;- confusionMatrix(newTesting$classe, predict(modelFitRFPCA, newdata=newTestingPCA))
-
-# Generalized Boosted Regression Modeling
-modelFitGBMPCA &lt;- train(newTraining$classe ~ . , method=&quot;gbm&quot;, trControl=fitControl, data=newTrainingPCA)</code></pre>
 <pre><code>## Iter   TrainDeviance   ValidDeviance   StepSize   Improve
 ##      1        1.6094             nan     0.1000    0.1156
 ##      2        1.5376             nan     0.1000    0.0801
@@ -289,28 +268,9 @@ modelFitGBMPCA &lt;- train(newTraining$classe ~ . , method=&quot;gbm&quot;, trCo
 ##    120        0.6333             nan     0.1000    0.0020
 ##    140        0.5887             nan     0.1000    0.0032
 ##    150        0.5666             nan     0.1000    0.0022</code></pre>
-<pre class="r"><code>cm_gbm_pca &lt;- confusionMatrix(newTesting$classe, predict(modelFitGBMPCA, newdata=newTestingPCA))</code></pre>
 </div>
 <div id="predicting-models-without-pca" class="section level2">
 <h2>Predicting Models without PCA</h2>
-<pre class="r"><code># Decision Trees
-modelFitTree &lt;- train(classe ~ . , method=&quot;rpart&quot;, data=newTraining, trControl=fitControl)
-cm_tree &lt;- confusionMatrix(newTesting$classe, predict(modelFitTree, newdata=newTesting))
-
-# Linear Discriminant Analysis
-modelFitLDA &lt;- train(classe ~ ., method=&quot;lda&quot;, data=newTraining, trControl=fitControl)
-cm_lda &lt;- confusionMatrix(newTesting$classe, predict(modelFitLDA, newdata=newTesting))
-
-#Naive Bayes
-modelFitNB &lt;- train(classe ~ ., method=&quot;nb&quot;, data=newTraining, trControl=fitControl)
-cm_nb &lt;- confusionMatrix(newTesting$classe, predict(modelFitNB, newdata=newTesting))
-
-#Random Forest
-modelFitRF &lt;- train(classe ~ . , method=&quot;rf&quot;, data=newTraining)
-cm_rf &lt;- confusionMatrix(newTesting$classe, predict(modelFitRF, newdata=newTesting))
-
-#Generalized Boosted Regression Modeling
-modelFitGBM &lt;- train(classe ~ ., method=&quot;gbm&quot;, data=newTraining, trControl=fitControl)</code></pre>
 <pre><code>## Iter   TrainDeviance   ValidDeviance   StepSize   Improve
 ##      1        1.6094             nan     0.1000    0.2331
 ##      2        1.4621             nan     0.1000    0.1616
@@ -330,7 +290,6 @@ modelFitGBM &lt;- train(classe ~ ., method=&quot;gbm&quot;, data=newTraining, tr
 ##    120        0.2275             nan     0.1000    0.0023
 ##    140        0.1923             nan     0.1000    0.0019
 ##    150        0.1781             nan     0.1000    0.0029</code></pre>
-<pre class="r"><code>cm_gbm &lt;- confusionMatrix(newTesting$classe, predict(modelFitGBM, newdata=newTesting))</code></pre>
 <p>For the sake of comparison, we can see the overall indicadors for each prediction model in the table below:</p>
 <pre class="r"><code># Analyzing the results
 resultingDataTable &lt;- rbind(cm_tree$overall, cm_tree_pca$overall, cm_lda$overall, cm_lda_pca$overall, 
@@ -339,7 +298,7 @@ resultingDataTable &lt;- rbind(cm_tree$overall, cm_tree_pca$overall, cm_lda$over
 rownames(resultingDataTable) &lt;- c(&quot;Tree&quot;, &quot;Tree w/ PCA&quot;, &quot;LDA&quot;, &quot;LDA w/ PCA&quot;,
                              &quot;Naive Baeyes&quot;, &quot;Naive Bayes w/ PCA&quot;, &quot;Random Forest&quot;, &quot;Random Forest w/ PCA&quot;,
                              &quot;GBM&quot;, &quot;GBM w/ PCA&quot;)
-
+ 
 resultingDataTable</code></pre>
 <pre><code>##                       Accuracy     Kappa AccuracyLower AccuracyUpper
 ## Tree                 0.5033990 0.3516115     0.4851663     0.5216250
@@ -414,14 +373,14 @@ print(paste(&quot;Out of Error Sample is: &quot;, oos_error * 100, &quot;%&quot;
 <p>Now we’ll use the original testing dataset and the best model for predicting the values.</p>
 <pre class="r"><code># This uses the code supplied by the class instructions
 answers &lt;- predict(modelFitRF, newdata=testing)
-write_files = function(x){
+pml_write_files = function(x){
     n = length(x)
     for(i in 1:n){
       filename = paste0(&quot;problem_id_&quot;,i,&quot;.txt&quot;)
       write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
     }
 }
-write_files(answers)</code></pre>
+pml_write_files(answers)</code></pre>
 </div>
 
 
